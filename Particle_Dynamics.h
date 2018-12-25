@@ -21,14 +21,21 @@ double Kinetic_Energy(double** velocities, double* masses, int num_points, int d
 
 double Potential_Energy(double(*energy_func)(double), double** positions, int num_points, int dim);
 
+
 class RadialPower_Force
 {
 public:
 	static double Coefficient;
-	template<int n, int d>
-	static double Force(double r);
-	template<int n, int d>
-	static double Energy(double r);
+	template<int p>	static double Force(double r);
+	template<int p> static double Energy(double r);
+};
+
+class Interaction
+{
+public:
+	static double Coefficient;
+	virtual double Force(double r);
+	virtual double Energy(double r) = 0;
 };
 
 class Gravitation
@@ -46,6 +53,15 @@ public:
 	static double Force(double r);
 	static double Energy(double r);
 };
+
+class Lennard_Jones : public Interaction 
+{
+public:
+	static double MinPotential_Radius;
+	static double Force(double r);
+	static double Energy(double r);
+};
+
 //
 
 // Particle Dynamics Algorithms

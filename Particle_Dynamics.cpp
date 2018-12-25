@@ -92,16 +92,16 @@ double Potential_Energy(double(*energy_func)(double), double** positions, int nu
 
 // RadialPower Force Class
 double RadialPower_Force::Coefficient = 100.0;
-template<int n, int d>
+template<int p>
 double RadialPower_Force::Force(double r)
 {
-	double p = (double)n / (double)d;
+	//double p = (double)n / (double)d;
 	return (-Coefficient * pow(r, p));
 }
-template<int n, int d>
+template<int p>
 double RadialPower_Force::Energy(double r)
 {
-	double p = (double)n / (double)d;
+	//double p = (double)n / (double)d;
 	return (Coefficient * pow(r, p+1) / (p+1));
 }
 
@@ -109,13 +109,12 @@ double RadialPower_Force::Energy(double r)
 double Gravitation::Coefficient = 100.0;
 double Gravitation::Force(double r)
 {
-	return (-Coefficient / (r * r));
+	return (-Coefficient / sqrt(r));
 }
 double Gravitation::Energy(double r)
 {
 	return (-Coefficient / r);
 }
-
 // Spring Class
 double Spring::Coefficient = 1.0;
 double Spring::Force(double r)
@@ -126,6 +125,17 @@ double Spring::Energy(double r)
 	{
 		return (Coefficient * r * r / 2.0);
 	}
+// Lennard Jones Class
+double Lennard_Jones::Coefficient = 100.0;
+double Lennard_Jones::MinPotential_Radius = 10;
+double Lennard_Jones::Force(double r)
+{
+	return (- 12 * (Coefficient / MinPotential_Radius) * (pow(MinPotential_Radius / r, 13) - pow(MinPotential_Radius / r, 7)));
+}
+double Lennard_Jones::Energy(double r)
+{
+	return (Coefficient * (pow(MinPotential_Radius / r, 12) - 2 * pow(MinPotential_Radius / r, 6)));
+}
 //
 
 // Particle Dynamics Algorithms
