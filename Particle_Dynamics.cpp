@@ -109,11 +109,21 @@ double RadialPower_Force::Energy(double r)
 double Gravitation::Coefficient = 100.0;
 double Gravitation::Force(double r)
 {
-	return (-Coefficient / sqrt(r));
+	return (-Coefficient / (r*r));
 }
 double Gravitation::Energy(double r)
 {
 	return (-Coefficient / r);
+}
+// Inverse Root
+double InverseRoot::Coefficient = 100.0;
+double InverseRoot::Force(double r)
+{
+	return (-Coefficient / sqrt(r));
+}
+double InverseRoot::Energy(double r)
+{
+	return (2 * Coefficient * sqrt(r));
 }
 // Spring Class
 double Spring::Coefficient = 1.0;

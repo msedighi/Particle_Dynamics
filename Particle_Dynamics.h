@@ -54,7 +54,15 @@ public:
 	static double Energy(double r);
 };
 
-class Lennard_Jones : public Interaction 
+class InverseRoot
+{
+public:
+	static double Coefficient;
+	static double Force(double r);
+	static double Energy(double r);
+};
+
+class Lennard_Jones : public Interaction
 {
 public:
 	static double MinPotential_Radius;
