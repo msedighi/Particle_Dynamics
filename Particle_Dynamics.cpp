@@ -107,17 +107,45 @@ double* Momentum(double** velocities, double* masses, int num_points, int dim)
 	return momentum;
 }
 
-double Kinetic_Energy(double** velocities, double* masses, int num_points, int dim)
+double* Energy_Exchange(Interaction* interaction, double** positions, double** velocities, int num_points, int dim)
 {
-	double energy = 0;
+	double* energy_exchange = new double[num_points];
+	double** local_force = new double*[num_points];
+	Force_Operator(interaction, positions, num_points, dim, local_force);
 	for (int i = 0; i < num_points; i++)
 	{
+		energy_exchange[i] = 0;
 		for (int j = 0; j < dim; j++)
 		{
-			energy += masses[i] * velocities[i][j] * velocities[i][j] / 2;
+			energy_exchange[i] += local_force[i][j] * velocities[i][j];
 		}
 	}
-	return energy;
+	return energy_exchange;
+}
+
+double* Kinetic_Energy(double** velocities, double* masses, int num_points, int dim, double total_energy)
+{
+	double* energy_vector = new double[num_points];
+	total_energy = 0;
+	for (int i = 0; i < num_points; i++)
+	{
+		energy_vector[i] = 0;
+		for (int j = 0; j < dim; j++)
+		{
+			energy_vector[i] += masses[i] * velocities[i][j] * velocities[i][j];
+		}
+		total_energy += energy_vector[i] / 2.0;
+	}
+
+	return energy_vector;
+}
+
+double* Kinetic_Energy(double** velocities, double* masses, int num_points, int dim)
+{
+	double total_energy;
+	double* energy_vector = Kinetic_Energy(velocities, masses, num_points, dim, total_energy);
+
+	return energy_vector;
 }
 
 double Potential_Energy(Interaction* interaction, double** positions, int num_points, int dim)
@@ -171,6 +199,16 @@ double Gravitation::Energy(double r)
 {
 	return (-Coefficient / r);
 }
+// Logarithmic Class
+double Logarithmic::Coefficient = 100.0;
+double Logarithmic::Force(double r)
+{
+	return (-Coefficient / r);
+}
+double Logarithmic::Energy(double r)
+{
+	return (Coefficient * log(r));
+}
 // Inverse Root
 double InverseRoot::Coefficient = 100.0;
 double InverseRoot::Force(double r)
@@ -184,14 +222,13 @@ double InverseRoot::Energy(double r)
 // Spring Class
 double Spring::Coefficient = 1.0;
 double Spring::Force(double r)
-	{
-		return (-Coefficient * r);
-	}
+{
+	return (-Coefficient * r);
+}
 double Spring::Energy(double r)
-	{
-		return (Coefficient * r * r / 2.0);
-	}
-//Spring::Spring() {};
+{
+	return (Coefficient * r * r / 2.0);
+}
 // Lennard Jones Class
 double Lennard_Jones::Coefficient = 100.0;
 double Lennard_Jones::MinPotential_Radius = 10;

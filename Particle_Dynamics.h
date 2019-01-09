@@ -31,7 +31,11 @@ double*** Force_Operator(double(*Force_func)(double), double** positions, int nu
 
 double* Momentum(double** velocities, double* masses, int num_points, int dim);
 
-double Kinetic_Energy(double** velocities, double* masses, int num_points, int dim);
+double* Energy_Exchange(Interaction* interaction, double** positions, double** velocities, int num_points, int dim);
+
+double* Kinetic_Energy(double** velocities, double* masses, int num_points, int dim, double total_energy);
+
+double* Kinetic_Energy(double** velocities, double* masses, int num_points, int dim);
 
 double Potential_Energy(Interaction* interaction, double** positions, int num_points, int dim);
 
@@ -47,6 +51,14 @@ public:
 };
 
 struct Gravitation : public Interaction
+{
+public:
+	static double Coefficient;
+	double Force(double r);
+	double Energy(double r);
+};
+
+struct Logarithmic : public Interaction
 {
 public:
 	static double Coefficient;
@@ -93,3 +105,4 @@ void Beeman(double(*Force_func)(double), double** x, double** v, double* m, doub
 void Runge_Kutta_5th(double(*Force_func)(double), double** x, double** v, double* m, double t, int num_points, int dim, long num_steps, double** e_x, double** e_v);
 
 void Simulation_Test_Spring1(double** x0, double** v0, double** x, double** v, double* m, double t, int dim, double** e_x, double** e_v);
+
